@@ -1,0 +1,351 @@
+/betube
+ ├── App.js
+ ├── screens/
+ │    ├── AuthScreen.js   (Face unlock gate)
+ │    ├── HomeScreen.js   (Sources + Search)
+ │    ├── PlayerScreen.js (Play, Pause, Rotate, Ad Pause toggle)
+ │    └── Settings.js
+ ├── components/
+ │    ├── FeatureCard.js
+ │    ├── SourceItem.js
+ │    └── MiniPlayer.jsimport React from "react"; import { motion } from "framer-motion"; import { Play, Pause, SkipForward, SkipBack, Shield, Lock, RotateCw, Smartphone, Music4, Search, Zap, Volume2, BadgeCheck, Download, CircleStop, } from "lucide-react";
+
+// Betube — Lightweight web prototype for concept review. // Notes: // - Uses Tailwind for styling (no import needed in this environment). // - Single-file component with simple mocked interactions. // - Replace sections with real logic/APIs when turning into a full app (e.g., React Native / Expo).
+
+const features = [ { icon: <Music4 className="w-6 h-6" />, title: "Unified Media Hub", desc: "Inspired by Boomplay, Shazam, YouTube, TubePlay & more — one place to search, play, and save.", badge: "All-in-one", }, { icon: <RotateCw className="w-6 h-6" />, title: "Rotate Any Stream", desc: "Force portrait/landscape for videos or live streams to match how you hold your phone.", badge: "Orientation", }, { icon: <CircleStop className="w-6 h-6" />, title: "Ad Pause Control", desc: "Request an ad pause window during playback. Toggle per session.", badge: "Focus mode", }, { icon: <Shield className="w-6 h-6" />, title: "Owner-Only Access", desc: "Face unlock + device check to block others from opening Betube.", badge: "Security", }, ];
+
+const sources = [ { name: "Boomplay", type: "Music" }, { name: "Shazam", type: "ID" }, { name: "YouTube", type: "Video" }, { name: "TubePlay", type: "Video" }, { name: "Total MP3", type: "Audio" }, { name: "iPhone Library", type: "Local" }, ];
+
+function Header() { return ( <div className="w-full flex items-center justify-between gap-3"> <div className="flex items-center gap-3"> <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 shadow-lg grid place-items-center"> <Music4 className="w-6 h-6 text-white" /> </div> <div> <h1 className="text-xl font-bold tracking-tight">Betube</h1> <p className="text-xs text-muted-foreground">Developer: Luthando Ndevu · v1.0 · Powered by AI Assistant</p> </div> </div>
+
+<div className="hidden md:flex items-center gap-2">
+    <button className="px-3 py-2 rounded-xl bg-black text-white text-sm shadow">Get Android</button>
+    <button className="px-3 py-2 rounded-xl bg-white/70 backdrop-blur text-sm shadow border">Join Beta</button>
+  </div>
+</div>
+
+); }
+
+function SearchBar() { return ( <div className="relative"> <input
+className="w-full pl-10 pr-24 py-3 rounded-2xl border shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-400"
+placeholder="Search songs, videos, creators…"
+/> <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 opacity-70" /> <button className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-sm shadow"> Search </button> </div> ); }
+
+function FeatureCard({ icon, title, desc, badge }) { return ( <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="p-4 rounded-2xl border shadow-sm bg-white/70 backdrop-blur hover:shadow-md" > <div className="flex items-center justify-between"> <div className="flex items-center gap-2"> <div className="w-10 h-10 grid place-items-center rounded-xl bg-gray-100">{icon}</div> <h3 className="font-semibold">{title}</h3> </div> <span className="text-xs px-2 py-1 rounded-full bg-gray-100">{badge}</span> </div> <p className="text-sm text-muted-foreground mt-2">{desc}</p> </motion.div> ); }
+
+function SourceItem({ name, type }) { return ( <div className="flex items-center justify-between p-3 rounded-xl border bg-white/70"> <div className="flex items-center gap-3"> <div className="w-8 h-8 rounded-lg bg-gray-100 grid place-items-center"> <BadgeCheck className="w-5 h-5" /> </div> <div> <p className="font-medium leading-none">{name}</p> <p className="text-xs text-muted-foreground">{type}</p> </div> </div> <button className="text-sm px-3 py-1.5 rounded-lg border">Connect</button> </div> ); }
+
+function PlayerMock() { const [playing, setPlaying] = React.useState(false); const [adPause, setAdPause] = React.useState(false);
+
+return ( <div className="p-4 rounded-2xl border bg-gradient-to-br from-gray-50 to-white shadow-sm"> <div className="flex items-center justify-between"> <div className="flex items-center gap-3"> <div className="w-12 h-12 rounded-xl bg-gray-200" /> <div> <p className="font-semibold leading-tight">Sample Track • Betube</p> <p className="text-xs text-muted-foreground">Preview • 00:42</p> </div> </div> <div className="flex items-center gap-2"> <button onClick={() => setAdPause(!adPause)} className={px-3 py-1.5 rounded-xl text-sm border ${adPause ? "bg-black text-white" : "bg-white"}} title="Toggle ad pause window" > <CircleStop className="w-4 h-4 inline mr-1" /> {adPause ? "Ad pause ON" : "Ad pause OFF"} </button> <Volume2 className="w-5 h-5" /> </div> </div>
+
+<div className="flex items-center justify-center gap-4 mt-4">
+    <button className="p-3 rounded-xl border bg-white">
+      <SkipBack className="w-5 h-5" />
+    </button>
+    <button
+      onClick={() => setPlaying(!playing)}
+      className="p-4 rounded-2xl shadow bg-black text-white"
+    >
+      {playing ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+    </button>
+    <button className="p-3 rounded-xl border bg-white">
+      <SkipForward className="w-5 h-5" />
+    </button>
+  </div>
+
+  <div className="mt-4 h-2 rounded-full bg-gray-200 overflow-hidden">
+    <div className="h-full w-1/3 bg-black" />
+  </div>
+</div>
+
+); }
+
+function SecurityPanel() { return ( <div className="p-4 rounded-2xl border bg-white/70"> <div className="flex items-center gap-3"> <div className="w-10 h-10 rounded-xl bg-gray-100 grid place-items-center"> <Lock className="w-5 h-5" /> </div> <div> <p className="font-semibold">Face Unlock Only</p> <p className="text-sm text-muted-foreground">Only the owner’s biometrics can open Betube (fallback PIN optional).</p> </div> </div> <div className="flex items-center gap-2 mt-3 text-sm"> <Shield className="w-4 h-4" /> <span>App lock · Device binding · Offline check</span> </div> </div> ); }
+
+export default function App() { return ( <div className="min-h-screen bg-gradient-to-b from-white to-gray-50"> <div className="max-w-6xl mx-auto p-4 md:p-8"> <Header />
+
+<motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45 }}
+      className="mt-6 grid md:grid-cols-2 gap-6"
+    >
+      <div className="p-6 rounded-3xl border bg-white/70 backdrop-blur shadow-sm">
+        <div className="flex items-center gap-3">
+          <Smartphone className="w-6 h-6" />
+          <h2 className="text-lg font-semibold">Your Media, One Tap</h2>
+        </div>
+        <p className="text-sm text-muted-foreground mt-2">
+          Betube brings music and video together. Search, play, rotate, and control ad interruptions
+          while keeping your library secure to you.
+        </p>
+        <div className="mt-4"><SearchBar /></div>
+
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          {features.map((f, i) => (
+            <FeatureCard key={i} {...f} />
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3 mt-6">
+          <button className="px-4 py-2 rounded-2xl bg-black text-white shadow flex items-center gap-2">
+            <Download className="w-4 h-4" /> Install (Mock)
+          </button>
+          <button className="px-4 py-2 rounded-2xl border bg-white flex items-center gap-2">
+            <Zap className="w-4 h-4" /> Try Demo
+          </button>
+        </div>
+      </div>
+
+      <div className="grid gap-6">
+        <PlayerMock />
+        <SecurityPanel />
+        <div className="p-4 rounded-2xl border bg-white/70">
+          <p className="font-semibold mb-3">Connected Sources</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {sources.map((s) => (
+              <SourceItem key={s.name} {...s} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+
+    <footer className="mt-10 text-center text-xs text-muted-foreground">
+      <p>
+        © {new Date().getFullYear()} Betube. All rights reserved. · Concept UI Prototype for review
+      </p>
+    </footer>
+  </div>
+</div>
+
+); }
+
+// ============================= // Tube Bee — Flutter Starter v1.0 // Developer: Luthando Ndevu // Version: 1.0 // Powered by AI Assistant // Theme: Matte Black + Neon Yellow, Bee icon // // Features in this starter: //  - Biometric lock on launch (Face/Touch via local_auth) //  - Bottom tabs: Home, Sports (fixtures/highlights), Music (equalizer + player), Apps, Assistant //  - Powerful Equalizer UI (sliders + presets) with hooks to wire up platform EQ //  - Video & audio players (just_audio + video_player + chewie) //  - Orientation: video player widget supports full-screen; allow device rotation in Android manifest if desired //  - Ad control: app honors a "Hide in-app ads" toggle (NOTE: cannot block ads in other apps or 3rd‑party streams) //  - Developer/About screen shows your name + version (requested text included) //  - Black/Yellow theme + Bee logo placeholder //  - Offline-first data model (Hive box) for play history + recommendations seed // // ---------- // pubspec.yaml (add these deps) // ---------- // name: tube_bee // description: Tube Bee media app starter // publish_to: 'none' // environment: //   sdk: ">=3.4.0 <4.0.0" // dependencies: //   flutter: { sdk: flutter } //   cupertino_icons: ^1.0.6 //   flutter_localizations: { sdk: flutter } //   google_fonts: ^6.2.1 //   ionicons: ^0.2.2 //   local_auth: ^2.3.0 //   just_audio: ^0.9.42 //   audio_session: ^0.1.21 //   chewie: ^1.7.5 //   video_player: ^2.9.2 //   hive: ^2.2.3 //   hive_flutter: ^1.1.0 //   intl: ^0.19.0 //   provider: ^6.1.2 //   collection: ^1.18.0 // dev_dependencies: //   flutter_test: { sdk: flutter } //   flutter_lints: ^4.0.0 // flutter: //   uses-material-design: true //   assets: //     - assets/bee.png //     - assets/sample.mp3 //     - assets/sample.mp4 // // Create assets/bee.png (any bee logo for now). // Run: flutter pub get //      flutter run // // NOTE: Equalizer: On Android, you can wire platform EQ via Android AudioEffect API in a platform channel // (android.media.audiofx.Equalizer/BassBoost). This starter provides the UI + hooks. // Biometric: Device must have Face/Touch enrolled. Fallback to PIN if allowed in system. // =============================
+
+import 'dart:async'; import 'package:flutter/material.dart'; import 'package:google_fonts/google_fonts.dart'; import 'package:ionicons/ionicons.dart'; import 'package:provider/provider.dart'; import 'package:local_auth/local_auth.dart'; import 'package:hive/hive.dart'; import 'package:hive_flutter/hive_flutter.dart'; import 'package:just_audio/just_audio.dart'; import 'package:audio_session/audio_session.dart'; import 'package:chewie/chewie.dart'; import 'package:video_player/video_player.dart';
+
+// ====== THEME ====== const beeYellow = Color(0xFFFFD400); // neon-ish yellow const matteBlack = Color(0xFF0B0B0B); const cardBlack = Color(0xFF151515);
+
+ThemeData tubeBeeTheme() { final base = ThemeData.dark(useMaterial3: true); return base.copyWith( colorScheme: base.colorScheme.copyWith( primary: beeYellow, secondary: beeYellow, surface: matteBlack, background: matteBlack, ), scaffoldBackgroundColor: matteBlack, appBarTheme: const AppBarTheme( backgroundColor: matteBlack, foregroundColor: beeYellow, elevation: 0, centerTitle: true, ), textTheme: GoogleFonts.poppinsTextTheme(base.textTheme.apply( bodyColor: Colors.white, displayColor: Colors.white, )), cardTheme: CardTheme( color: cardBlack, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), elevation: 2, margin: const EdgeInsets.all(12), ), sliderTheme: const SliderThemeData( thumbColor: beeYellow, activeTrackColor: beeYellow, inactiveTrackColor: Colors.white38, ), floatingActionButtonTheme: const FloatingActionButtonThemeData( backgroundColor: beeYellow, foregroundColor: Colors.black, ), ); }
+
+// ====== DATA MODELS ====== class PlayRecord { final String id; final String title; final String type; // music | video | series | sport final DateTime playedAt; PlayRecord({required this.id, required this.title, required this.type, required this.playedAt});
+
+Map<String, dynamic> toMap() => { 'id': id, 'title': title, 'type': type, 'playedAt': playedAt.millisecondsSinceEpoch, };
+
+static PlayRecord from(Map m) => PlayRecord( id: m['id'], title: m['title'], type: m['type'], playedAt: DateTime.fromMillisecondsSinceEpoch(m['playedAt']), ); }
+
+class SettingsModel with ChangeNotifier { bool hideInAppAds = true; // app-level ads toggle (cannot block third-party ads) bool autoRotateVideo = true; bool recommendationsOn = true;
+
+void toggleAds(bool v) { hideInAppAds = v; notifyListeners(); } void toggleRotate(bool v) { autoRotateVideo = v; notifyListeners(); } void toggleRecs(bool v) { recommendationsOn = v; notifyListeners(); } }
+
+class HistoryModel with ChangeNotifier { late Box _box; List<PlayRecord> items = [];
+
+Future init() async { _box = await Hive.openBox('history'); items = _box.values .map((e) => PlayRecord.from(Map<String, dynamic>.from(e))) .toList() ..sort((a, b) => b.playedAt.compareTo(a.playedAt)); notifyListeners(); }
+
+Future add(PlayRecord r) async { await _box.add(r.toMap()); items.insert(0, r); notifyListeners(); } }
+
+// ====== BIOMETRIC GATE ====== class LockGate extends StatefulWidget { const LockGate({super.key}); @override State<LockGate> createState() => _LockGateState(); }
+
+class _LockGateState extends State<LockGate> { final _auth = LocalAuthentication(); String? _error;
+
+@override void initState() { super.initState(); _secure(); }
+
+Future _secure() async { try { final canCheck = await _auth.isDeviceSupported(); if (!canCheck) { setState(() => _error = 'Biometric not supported'); return; } final did = await auth.authenticate( localizedReason: 'Unlock Tube Bee', options: const AuthenticationOptions(biometricOnly: true, stickyAuth: true), ); if (did && mounted) { Navigator.of(context).pushReplacement( MaterialPageRoute(builder: () => const TubeBeeShell())); } } catch (e) { setState(() => _error = e.toString()); } }
+
+@override Widget build(BuildContext context) { return Scaffold( backgroundColor: matteBlack, body: Center( child: Column( mainAxisAlignment: MainAxisAlignment.center, children: [ Image.asset('assets/bee.png', width: 120, height: 120), const SizedBox(height: 20), Text('Tube Bee', style: GoogleFonts.poppins(fontSize: 28, color: beeYellow, fontWeight: FontWeight.w700)), const SizedBox(height: 6), const Text('Face security required', style: TextStyle(color: Colors.white70)), if (_error != null) Padding( padding: const EdgeInsets.all(12.0), child: Text(_error!, style: const TextStyle(color: Colors.redAccent)), ), const SizedBox(height: 20), ElevatedButton.icon( onPressed: _secure, icon: const Icon(Ionicons.lock_closed_outline, color: Colors.black), style: ElevatedButton.styleFrom(backgroundColor: beeYellow, foregroundColor: Colors.black), label: const Text('Unlock'), ) ], ), ), ); } }
+
+// ====== MAIN APP SHELL ====== class TubeBeeShell extends StatefulWidget { const TubeBeeShell({super.key}); @override State<TubeBeeShell> createState() => _TubeBeeShellState(); }
+
+class _TubeBeeShellState extends State<TubeBeeShell> { int _tab = 0; final _tabs = const [HomeScreen(), SportsScreen(), MusicScreen(), AppsScreen(), AssistantScreen()];
+
+@override Widget build(BuildContext context) { return Scaffold( appBar: AppBar( title: Row(mainAxisAlignment: MainAxisAlignment.center, children:[ Image.asset('assets/bee.png', width: 28, height: 28), const SizedBox(width: 8), const Text('Tube Bee', style: TextStyle(color: beeYellow, fontWeight: FontWeight.bold)), ]), actions: [ IconButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder:(_)=> const AboutScreen())), icon: const Icon(Ionicons.information_circle_outline, color: beeYellow)) ], ), body: _tabs[_tab], bottomNavigationBar: NavigationBar( backgroundColor: cardBlack, indicatorColor: beeYellow.withOpacity(.15), selectedIndex: _tab, onDestinationSelected: (i)=> setState(()=> _tab=i), destinations: const [ NavigationDestination(icon: Icon(Ionicons.home_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.home), label: 'Home'), NavigationDestination(icon: Icon(Ionicons.trophy_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.trophy), label: 'Sports'), NavigationDestination(icon: Icon(Ionicons.musical_notes_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.musical_notes), label: 'Music'), NavigationDestination(icon: Icon(Ionicons.apps_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.apps), label: 'Apps'), NavigationDestination(icon: Icon(Ionicons.chatbubbles_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.chatbubbles), label: 'Assistant'), ], ), ); } }
+
+// ====== HOME ====== class HomeScreen extends StatelessWidget { const HomeScreen({super.key}); @override Widget build(BuildContext context) { return ListView( padding: const EdgeInsets.all(12), children: const [ _SectionTitle('Today For You'), _CardRow(children: [ _HeroCard(title: 'Latest Movies', icon: Ionicons.film_outline), _HeroCard(title: 'Hot Music Videos', icon: Ionicons.videocam_outline), _HeroCard(title: 'Series Picks', icon: Ionicons.tv_outline), ]), _SectionTitle('Quick Sports Highlights'), _CardRow(children: [ _HighlightCard(teamA: 'City', teamB: 'United', score: '2 - 1'), _HighlightCard(teamA: 'Bulls', teamB: 'Sharks', score: '19 - 15'), ]), _SectionTitle('Continue Watching/Listening'), _CardRow(children: [ _ContinueCard(title: 'Sample Video', progress: .45), _ContinueCard(title: 'Sample Track', progress: .72), ]), ], ); } }
+
+class _SectionTitle extends StatelessWidget { final String text; const _SectionTitle(this.text, {super.key}); @override Widget build(BuildContext context) => Padding( padding: const EdgeInsets.symmetric(vertical: 8), child: Text(text, style: const TextStyle(fontSize: 18, color: beeYellow, fontWeight: FontWeight.w700)), ); }
+
+class _CardRow extends StatelessWidget { final List<Widget> children; const _CardRow({required this.children}); @override Widget build(BuildContext context) => SingleChildScrollView( scrollDirection: Axis.horizontal, child: Row(children: children.map((w)=> SizedBox(width: 240, child: w)).toList()), ); }
+
+class _HeroCard extends StatelessWidget { final String title; final IconData icon; const _HeroCard({required this.title, required this.icon}); @override Widget build(BuildContext context) => Card( child: Container( padding: const EdgeInsets.all(16), height: 120, child: Row(children:[ Icon(icon, color: beeYellow, size: 42), const SizedBox(width: 14), Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))), ]), ), ); }
+
+class _HighlightCard extends StatelessWidget { final String teamA, teamB, score; const _HighlightCard({required this.teamA, required this.teamB, required this.score}); @override Widget build(BuildContext context) => Card( child: Container( padding: const EdgeInsets.all(16), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[ Row(children:[ const Icon(Ionicons.flash_outline, color: beeYellow), const SizedBox(width: 8), Text('Highlight', style: TextStyle(color: Colors.white.withOpacity(.9))), ]), const SizedBox(height: 10), Text('$teamA vs $teamB', style: const TextStyle(fontWeight: FontWeight.w700)), const SizedBox(height: 6), Text(score, style: const TextStyle(color: beeYellow, fontSize: 16, fontWeight: FontWeight.bold)), ]), ), ); }
+
+class _ContinueCard extends StatelessWidget { final String title; final double progress; const _ContinueCard({required this.title, required this.progress}); @override Widget build(BuildContext context) => Card( child: Container( padding: const EdgeInsets.all(16), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[ Text(title, style: const TextStyle(fontWeight: FontWeight.w600)), const SizedBox(height: 10), LinearProgressIndicator(value: progress, backgroundColor: Colors.white12, color: beeYellow), ]), ), ); }
+
+// ====== SPORTS ====== class SportsScreen extends StatelessWidget { const SportsScreen({super.key}); @override Widget build(BuildContext context) { final fixtures = [ {'league': 'Premier League', 'match': 'Arsenal vs Chelsea', 'time': '20:00'}, {'league': 'La Liga', 'match': 'Barça vs Sevilla', 'time': '22:00'}, {'league': 'Rugby URC', 'match': 'Stormers vs Leinster', 'time': '19:30'}, ]; return ListView( padding: const EdgeInsets.all(12), children: [ const _SectionTitle('Fixtures'), ...fixtures.map((f) => Card( child: ListTile( leading: const Icon(Ionicons.calendar_outline, color: beeYellow), title: Text(f['match']!), subtitle: Text(f['league']!), trailing: Text( f['time']!, style: const TextStyle(color: beeYellow, fontWeight: FontWeight.bold), ), ), )), const _SectionTitle('Short Highlights'), const VideoTile(title: 'Sample Highlight', asset: 'assets/sample.mp4'), ], ); } }
+
+class VideoTile extends StatefulWidget { final String title; final String asset; // use Network source for streaming clips const VideoTile({super.key, required this.title, required this.asset}); @override State<VideoTile> createState() => _VideoTileState(); }
+
+class _VideoTileState extends State<VideoTile> { late VideoPlayerController _vc; ChewieController? _chewie;
+
+@override void initState() { super.initState(); vc = VideoPlayerController.asset(widget.asset) ..initialize().then(() => setState(() {})); }
+
+@override void dispose() { _chewie?.dispose(); _vc.dispose(); super.dispose(); }
+
+@override Widget build(BuildContext context) { if (_vc.value.isInitialized) { _chewie ??= ChewieController( videoPlayerController: _vc, autoPlay: false, looping: false, allowMuting: true, allowPlaybackSpeedChanging: true, additionalOptions: (context) => [ OptionItem( onTap: () => setState(() => _vc.setLooping(!_vc.value.isLooping)), iconData: Ionicons.repeat, title: 'Loop', ), ], ); }
+
+return Card(
+  child: Padding(
+    padding: const EdgeInsets.all(12.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+        const SizedBox(height: 8),
+        AspectRatio(
+          aspectRatio: _vc.value.isInitialized ? _vc.value.aspectRatio : 16 / 9,
+          child: _vc.value.isInitialized
+              ? Chewie(controller: _chewie!)
+              : const Center(child: CircularProgressIndicator()),
+        ),
+      ],
+    ),
+  ),
+);
+
+} }
+
+// ====== MUSIC (Equalizer + Player) ====== class MusicScreen extends StatefulWidget { const MusicScreen({super.key}); @override State<MusicScreen> createState() => _MusicScreenState(); }
+
+class _MusicScreenState extends State<MusicScreen> { final _player = AudioPlayer(); final _bands = [60, 230, 910, 3600, 14000]; // Hz (UI only) final Map<int, double> _gains = {60: 0, 230: 0, 910: 0, 3600: 0, 14000: 0}; // dB String _preset = 'Custom';
+
+@override void initState() { super.initState(); _initAudio(); }
+
+Future<void> _initAudio() async { final session = await AudioSession.instance; await session.configure(const AudioSessionConfiguration.music()); await _player.setAsset('assets/sample.mp3'); }
+
+@override void dispose() { _player.dispose(); super.dispose(); }
+
+void _applyPreset(String name) { final presets = { 'Pop': {60: -1.0, 230: 2.0, 910: 3.0, 3600: 2.0, 14000: -1.0}, 'Rock': {60: 3.0, 230: 1.0, 910: 0.0, 3600: 2.0, 14000: 3.0}, 'Hip-Hop': {60: 5.0, 230: 3.0, 910: 0.0, 3600: -1.0, 14000: 1.0}, 'Jazz': {60: -1.0, 230: 0.0, 910: 2.0, 3600: 3.0, 14000: 2.0}, 'Flat': {60: 0.0, 230: 0.0, 910: 0.0, 3600: 0.0, 14000: 0.0}, }; setState(() { _preset = name; _gains.addAll(presets[name]!); }); // TODO: Wire to platform EQ via a MethodChannel on Android (AudioEffect API) }
+
+@override Widget build(BuildContext context) { return ListView( padding: const EdgeInsets.all(12), children: [ Card( child: Padding( padding: const EdgeInsets.all(16.0), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ const Text('Player', style: TextStyle(fontWeight: FontWeight.w700)), const SizedBox(height: 8), Row( children: [ IconButton( icon: const Icon(Ionicons.play), onPressed: _player.play, ), IconButton( icon: const Icon(Ionicons.pause), onPressed: _player.pause, ), IconButton( icon: const Icon(Ionicons.stop), onPressed: _player.stop, ), const Spacer(), const Icon(Ionicons.options_outline, color: beeYellow), const SizedBox(width: 8), Text('Preset: $_preset'), const SizedBox(width: 8), PopupMenuButton<String>( icon: const Icon(Ionicons.chevron_down), onSelected: _applyPreset, itemBuilder: (ctx) => [ 'Pop', 'Rock', 'Hip-Hop', 'Jazz', 'Flat' ].map((e) => PopupMenuItem(value: e, child: Text(e))).toList(), ), ], ), ], ), ), ), const _SectionTitle('Equalizer (visual only)'), Card( child: Padding( padding: const EdgeInsets.all(16.0), child: Row( mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: _bands.map((hz) { return _EqSlider( label: '${hz ~/ (hz >= 1000 ? 1000 : 1)}${hz >= 1000 ? 'k' : ''}Hz', value: _gains[hz]!, onChanged: (v) => setState(() => _gains[hz] = v), ); }).toList(), ), ), ), ], ); } }
+
+class _EqSlider extends StatelessWidget { final String label; final double value; final ValueChanged<double> onChanged; const _EqSlider({required this.label, required this.value, required this.onChanged}); @override Widget build(BuildContext context) { return Column( mainAxisSize: MainAxisSize.min, children: [ RotatedBox( quarterTurns: 3, child: Slider( min: -10, max: 10, divisions: 40, value: value, onChanged: onChanged, ), ), const SizedBox(height: 8), Text(label, style: const TextStyle(color: beeYellow)), ], ); } }
+
+// ====== APPS (specials like Play Store) ====== class AppsScreen extends StatelessWidget { const AppsScreen({super.key}); @override Widget build(BuildContext context) { final apps = [ {'name': 'Boomplay', 'desc': 'Music for Africa'}, {'name': 'Shazam', 'desc': 'Name that song'}, {'name': 'YouTube', 'desc': 'Video platform'}, {'name': 'TubePlay', 'desc': 'Third-party client'}, {'name': 'Total MP3', 'desc': 'Lightweight player'}, ]; return ListView( padding: const EdgeInsets.all(12), children: [ const _SectionTitle('App Store Specials'), ...apps.map((a) => Card( child: ListTile( leading: const Icon(Ionicons.apps, color: beeYellow), title: Text(a['name']!), subtitle: Text(a['desc']!), trailing: ElevatedButton( onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: beeYellow, foregroundColor: Colors.black), child: const Text('View'), ), ), )), ], ); } }
+
+// ====== ASSISTANT (placeholder offline AI UI) ====== class AssistantScreen extends StatelessWidget { const AssistantScreen({super.key}); @override Widget build(BuildContext context) { return ListView( padding: const EdgeInsets.all(12), children: [ Card( child: Padding( padding: const EdgeInsets.all(16.0), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ Text('Assistant', style: TextStyle(fontWeight: FontWeight.w700)), SizedBox(height: 8), Text('Ask me to play, search, or recommend. (Wire to local model like GPT4All later).'), ], ), ), ), ], ); } }
+
+// ====== ABOUT ====== class AboutScreen extends StatelessWidget { const AboutScreen({super.key}); @override Widget build(BuildContext context) { return Scaffold( appBar: AppBar(title: const Text('About', style: TextStyle(color: beeYellow))), body: ListView( padding: const EdgeInsets.all(16), children: [ Center(child: Image.asset('assets/bee.png', width: 96, height: 96)), const SizedBox(height: 12), const Center( child: Text('Tube Bee', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: beeYellow)), ), const SizedBox(height: 24), const ListTile( leading: Icon(Ionicons.person_outline, color: beeYellow), title: Text('Developer'), subtitle: Text('Luthando Ndevu'), ), const ListTile( leading: Icon(Ionicons.code_slash_outline, color: beeYellow), title: Text('Version'), subtitle: Text('1.0'), ), const ListTile( leading: Icon(Ionicons.sparkles_outline, color: beeYellow), title: Text('Powered by'), subtitle: Text('AI Assistant'), ), const SizedBox(height: 24), Card( child: Padding( padding: const EdgeInsets.all(16.0), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ Text('Notes', style: TextStyle(fontWeight: FontWeight.w700)), SizedBox(height: 8), Text('• Biometric lock required to open the app.'), Text("• 'Hide in-app ads' only affects Tube Bee UI (can't block ads inside third-party streams)."), Text('• Equalizer sliders are visual until you connect Android AudioEffect via a MethodChannel.'), ], ), ), ), ], ), ); } }
+
+// ====== UTILITY UI ====== class SettingsSheet extends StatelessWidget { const SettingsSheet({super.key}); @override Widget build(BuildContext context) { final settings = context.watch<SettingsModel>(); return Padding( padding: const EdgeInsets.all(16.0), child: Column( mainAxisSize: MainAxisSize.min, children: [ SwitchListTile( title: const Text('Hide in-app ads'), value: settings.hideInAppAds, onChanged: settings.toggleAds, ), SwitchListTile( title: const Text('Auto-rotate video'), value: settings.autoRotateVideo, onChanged: settings.toggleRotate, ), SwitchListTile( title: const Text('Recommendations'), value: settings.recommendationsOn, onChanged: settings.toggleRecs, ), ], ), ); } }
+
+// ====== ENTRYPOINT ====== Future<void> main() async { WidgetsFlutterBinding.ensureInitialized(); await Hive.initFlutter(); final history = HistoryModel(); await history.init(); runApp(MultiProvider( providers: [ ChangeNotifierProvider(create: () => SettingsModel()), ChangeNotifierProvider(create: () => history), ], child: MaterialApp( debugShowCheckedModeBanner: false, title: 'Tube Bee', theme: tubeBeeTheme(), home: const LockGate(), ), )); }
+
+Developer: Luthando Ndevu
+Version: 1.0
+Powered by AI Assistantsudo gem install cocoapodsVersion 7.13.6 fa
+Build: 2025010701
+Bundle: 1.12.5// ============================= // Tube Bee — Flutter Starter v1.0 // Developer: Luthando Ndevu // Version: 1.0 // Powered by AI Assistant // Theme: Matte Black + Neon Yellow, Bee icon // // Features in this starter: //  - Biometric lock on launch (Face/Touch via local_auth) //  - Bottom tabs: Home, Sports (fixtures/highlights), Music (equalizer + player), Apps, Assistant //  - Powerful Equalizer UI (sliders + presets) with hooks to wire up platform EQ //  - Video & audio players (just_audio + video_player + chewie) //  - Orientation: video player widget supports full-screen; allow device rotation in Android manifest if desired //  - Ad control: app honors a "Hide in-app ads" toggle (NOTE: cannot block ads in other apps or 3rd‑party streams) //  - Developer/About screen shows your name + version (requested text included) //  - Black/Yellow theme + Bee logo placeholder //  - Offline-first data model (Hive box) for play history + recommendations seed // // ---------- // pubspec.yaml (add these deps) // ---------- // name: tube_bee // description: Tube Bee media app starter // publish_to: 'none' // environment: //   sdk: ">=3.4.0 <4.0.0" // dependencies: //   flutter: { sdk: flutter } //   cupertino_icons: ^1.0.6 //   flutter_localizations: { sdk: flutter } //   google_fonts: ^6.2.1 //   ionicons: ^0.2.2 //   local_auth: ^2.3.0 //   just_audio: ^0.9.42 //   audio_session: ^0.1.21 //   chewie: ^1.7.5 //   video_player: ^2.9.2 //   hive: ^2.2.3 //   hive_flutter: ^1.1.0 //   intl: ^0.19.0 //   provider: ^6.1.2 //   collection: ^1.18.0 // dev_dependencies: //   flutter_test: { sdk: flutter } //   flutter_lints: ^4.0.0 // flutter: //   uses-material-design: true //   assets: //     - assets/bee.png //     - assets/sample.mp3 //     - assets/sample.mp4 // // Create assets/bee.png (any bee logo for now). // Run: flutter pub get //      flutter run // // NOTE: Equalizer: On Android, you can wire platform EQ via Android AudioEffect API in a platform channel // (android.media.audiofx.Equalizer/BassBoost). This starter provides the UI + hooks. // Biometric: Device must have Face/Touch enrolled. Fallback to PIN if allowed in system. // =============================
+
+import 'dart:async'; import 'package:flutter/material.dart'; import 'package:google_fonts/google_fonts.dart'; import 'package:ionicons/ionicons.dart'; import 'package:provider/provider.dart'; import 'package:local_auth/local_auth.dart'; import 'package:hive/hive.dart'; import 'package:hive_flutter/hive_flutter.dart'; import 'package:just_audio/just_audio.dart'; import 'package:audio_session/audio_session.dart'; import 'package:chewie/chewie.dart'; import 'package:video_player/video_player.dart';
+
+// ====== THEME ====== const beeYellow = Color(0xFFFFD400); // neon-ish yellow const matteBlack = Color(0xFF0B0B0B); const cardBlack = Color(0xFF151515);
+
+ThemeData tubeBeeTheme() { final base = ThemeData.dark(useMaterial3: true); return base.copyWith( colorScheme: base.colorScheme.copyWith( primary: beeYellow, secondary: beeYellow, surface: matteBlack, background: matteBlack, ), scaffoldBackgroundColor: matteBlack, appBarTheme: const AppBarTheme( backgroundColor: matteBlack, foregroundColor: beeYellow, elevation: 0, centerTitle: true, ), textTheme: GoogleFonts.poppinsTextTheme(base.textTheme.apply( bodyColor: Colors.white, displayColor: Colors.white, )), cardTheme: CardTheme( color: cardBlack, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), elevation: 2, margin: const EdgeInsets.all(12), ), sliderTheme: const SliderThemeData( thumbColor: beeYellow, activeTrackColor: beeYellow, inactiveTrackColor: Colors.white38, ), floatingActionButtonTheme: const FloatingActionButtonThemeData( backgroundColor: beeYellow, foregroundColor: Colors.black, ), ); }
+
+// ====== DATA MODELS ====== class PlayRecord { final String id; final String title; final String type; // music | video | series | sport final DateTime playedAt; PlayRecord({required this.id, required this.title, required this.type, required this.playedAt});
+
+Map<String, dynamic> toMap() => { 'id': id, 'title': title, 'type': type, 'playedAt': playedAt.millisecondsSinceEpoch, };
+
+static PlayRecord from(Map m) => PlayRecord( id: m['id'], title: m['title'], type: m['type'], playedAt: DateTime.fromMillisecondsSinceEpoch(m['playedAt']), ); }
+
+class SettingsModel with ChangeNotifier { bool hideInAppAds = true; // app-level ads toggle (cannot block third-party ads) bool autoRotateVideo = true; bool recommendationsOn = true;
+
+void toggleAds(bool v) { hideInAppAds = v; notifyListeners(); } void toggleRotate(bool v) { autoRotateVideo = v; notifyListeners(); } void toggleRecs(bool v) { recommendationsOn = v; notifyListeners(); } }
+
+class HistoryModel with ChangeNotifier { late Box _box; List<PlayRecord> items = [];
+
+Future init() async { _box = await Hive.openBox('history'); items = _box.values .map((e) => PlayRecord.from(Map<String, dynamic>.from(e))) .toList() ..sort((a, b) => b.playedAt.compareTo(a.playedAt)); notifyListeners(); }
+
+Future add(PlayRecord r) async { await _box.add(r.toMap()); items.insert(0, r); notifyListeners(); } }
+
+// ====== BIOMETRIC GATE ====== class LockGate extends StatefulWidget { const LockGate({super.key}); @override State<LockGate> createState() => _LockGateState(); }
+
+class _LockGateState extends State<LockGate> { final _auth = LocalAuthentication(); String? _error;
+
+@override void initState() { super.initState(); _secure(); }
+
+Future _secure() async { try { final canCheck = await _auth.isDeviceSupported(); if (!canCheck) { setState(() => _error = 'Biometric not supported'); return; } final did = await auth.authenticate( localizedReason: 'Unlock Tube Bee', options: const AuthenticationOptions(biometricOnly: true, stickyAuth: true), ); if (did && mounted) { Navigator.of(context).pushReplacement( MaterialPageRoute(builder: () => const TubeBeeShell())); } } catch (e) { setState(() => _error = e.toString()); } }
+
+@override Widget build(BuildContext context) { return Scaffold( backgroundColor: matteBlack, body: Center( child: Column( mainAxisAlignment: MainAxisAlignment.center, children: [ Image.asset('assets/bee.png', width: 120, height: 120), const SizedBox(height: 20), Text('Tube Bee', style: GoogleFonts.poppins(fontSize: 28, color: beeYellow, fontWeight: FontWeight.w700)), const SizedBox(height: 6), const Text('Face security required', style: TextStyle(color: Colors.white70)), if (_error != null) Padding( padding: const EdgeInsets.all(12.0), child: Text(_error!, style: const TextStyle(color: Colors.redAccent)), ), const SizedBox(height: 20), ElevatedButton.icon( onPressed: _secure, icon: const Icon(Ionicons.lock_closed_outline, color: Colors.black), style: ElevatedButton.styleFrom(backgroundColor: beeYellow, foregroundColor: Colors.black), label: const Text('Unlock'), ) ], ), ), ); } }
+
+// ====== MAIN APP SHELL ====== class TubeBeeShell extends StatefulWidget { const TubeBeeShell({super.key}); @override State<TubeBeeShell> createState() => _TubeBeeShellState(); }
+
+class _TubeBeeShellState extends State<TubeBeeShell> { int _tab = 0; final _tabs = const [HomeScreen(), SportsScreen(), MusicScreen(), AppsScreen(), AssistantScreen()];
+
+@override Widget build(BuildContext context) { return Scaffold( appBar: AppBar( title: Row(mainAxisAlignment: MainAxisAlignment.center, children:[ Image.asset('assets/bee.png', width: 28, height: 28), const SizedBox(width: 8), const Text('Tube Bee', style: TextStyle(color: beeYellow, fontWeight: FontWeight.bold)), ]), actions: [ IconButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder:(_)=> const AboutScreen())), icon: const Icon(Ionicons.information_circle_outline, color: beeYellow)) ], ), body: _tabs[_tab], bottomNavigationBar: NavigationBar( backgroundColor: cardBlack, indicatorColor: beeYellow.withOpacity(.15), selectedIndex: _tab, onDestinationSelected: (i)=> setState(()=> _tab=i), destinations: const [ NavigationDestination(icon: Icon(Ionicons.home_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.home), label: 'Home'), NavigationDestination(icon: Icon(Ionicons.trophy_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.trophy), label: 'Sports'), NavigationDestination(icon: Icon(Ionicons.musical_notes_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.musical_notes), label: 'Music'), NavigationDestination(icon: Icon(Ionicons.apps_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.apps), label: 'Apps'), NavigationDestination(icon: Icon(Ionicons.chatbubbles_outline, color: Colors.white70), selectedIcon: Icon(Ionicons.chatbubbles), label: 'Assistant'), ], ), ); } }
+
+// ====== HOME ====== class HomeScreen extends StatelessWidget { const HomeScreen({super.key}); @override Widget build(BuildContext context) { return ListView( padding: const EdgeInsets.all(12), children: const [ _SectionTitle('Today For You'), _CardRow(children: [ _HeroCard(title: 'Latest Movies', icon: Ionicons.film_outline), _HeroCard(title: 'Hot Music Videos', icon: Ionicons.videocam_outline), _HeroCard(title: 'Series Picks', icon: Ionicons.tv_outline), ]), _SectionTitle('Quick Sports Highlights'), _CardRow(children: [ _HighlightCard(teamA: 'City', teamB: 'United', score: '2 - 1'), _HighlightCard(teamA: 'Bulls', teamB: 'Sharks', score: '19 - 15'), ]), _SectionTitle('Continue Watching/Listening'), _CardRow(children: [ _ContinueCard(title: 'Sample Video', progress: .45), _ContinueCard(title: 'Sample Track', progress: .72), ]), ], ); } }
+
+class _SectionTitle extends StatelessWidget { final String text; const _SectionTitle(this.text, {super.key}); @override Widget build(BuildContext context) => Padding( padding: const EdgeInsets.symmetric(vertical: 8), child: Text(text, style: const TextStyle(fontSize: 18, color: beeYellow, fontWeight: FontWeight.w700)), ); }
+
+class _CardRow extends StatelessWidget { final List<Widget> children; const _CardRow({required this.children}); @override Widget build(BuildContext context) => SingleChildScrollView( scrollDirection: Axis.horizontal, child: Row(children: children.map((w)=> SizedBox(width: 240, child: w)).toList()), ); }
+
+class _HeroCard extends StatelessWidget { final String title; final IconData icon; const _HeroCard({required this.title, required this.icon}); @override Widget build(BuildContext context) => Card( child: Container( padding: const EdgeInsets.all(16), height: 120, child: Row(children:[ Icon(icon, color: beeYellow, size: 42), const SizedBox(width: 14), Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))), ]), ), ); }
+
+class _HighlightCard extends StatelessWidget { final String teamA, teamB, score; const _HighlightCard({required this.teamA, required this.teamB, required this.score}); @override Widget build(BuildContext context) => Card( child: Container( padding: const EdgeInsets.all(16), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[ Row(children:[ const Icon(Ionicons.flash_outline, color: beeYellow), const SizedBox(width: 8), Text('Highlight', style: TextStyle(color: Colors.white.withOpacity(.9))), ]), const SizedBox(height: 10), Text('$teamA vs $teamB', style: const TextStyle(fontWeight: FontWeight.w700)), const SizedBox(height: 6), Text(score, style: const TextStyle(color: beeYellow, fontSize: 16, fontWeight: FontWeight.bold)), ]), ), ); }
+
+class _ContinueCard extends StatelessWidget { final String title; final double progress; const _ContinueCard({required this.title, required this.progress}); @override Widget build(BuildContext context) => Card( child: Container( padding: const EdgeInsets.all(16), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[ Text(title, style: const TextStyle(fontWeight: FontWeight.w600)), const SizedBox(height: 10), LinearProgressIndicator(value: progress, backgroundColor: Colors.white12, color: beeYellow), ]), ), ); }
+
+// ====== SPORTS ====== class SportsScreen extends StatelessWidget { const SportsScreen({super.key}); @override Widget build(BuildContext context) { final fixtures = [ {'league': 'Premier League', 'match': 'Arsenal vs Chelsea', 'time': '20:00'}, {'league': 'La Liga', 'match': 'Barça vs Sevilla', 'time': '22:00'}, {'league': 'Rugby URC', 'match': 'Stormers vs Leinster', 'time': '19:30'}, ]; return ListView( padding: const EdgeInsets.all(12), children: [ const _SectionTitle('Fixtures'), ...fixtures.map((f) => Card( child: ListTile( leading: const Icon(Ionicons.calendar_outline, color: beeYellow), title: Text(f['match']!), subtitle: Text(f['league']!), trailing: Text( f['time']!, style: const TextStyle(color: beeYellow, fontWeight: FontWeight.bold), ), ), )), const _SectionTitle('Short Highlights'), const VideoTile(title: 'Sample Highlight', asset: 'assets/sample.mp4'), ], ); } }
+
+class VideoTile extends StatefulWidget { final String title; final String asset; // use Network source for streaming clips const VideoTile({super.key, required this.title, required this.asset}); @override State<VideoTile> createState() => _VideoTileState(); }
+
+class _VideoTileState extends State<VideoTile> { late VideoPlayerController _vc; ChewieController? _chewie;
+
+@override void initState() { super.initState(); vc = VideoPlayerController.asset(widget.asset) ..initialize().then(() => setState(() {})); }
+
+@override void dispose() { _chewie?.dispose(); _vc.dispose(); super.dispose(); }
+
+@override Widget build(BuildContext context) { if (_vc.value.isInitialized) { _chewie ??= ChewieController( videoPlayerController: _vc, autoPlay: false, looping: false, allowMuting: true, allowPlaybackSpeedChanging: true, additionalOptions: (context) => [ OptionItem( onTap: () => setState(() => _vc.setLooping(!_vc.value.isLooping)), iconData: Ionicons.repeat, title: 'Loop', ), ], ); }
+
+return Card(
+  child: Padding(
+    padding: const EdgeInsets.all(12.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+        const SizedBox(height: 8),
+        AspectRatio(
+          aspectRatio: _vc.value.isInitialized ? _vc.value.aspectRatio : 16 / 9,
+          child: _vc.value.isInitialized
+              ? Chewie(controller: _chewie!)
+              : const Center(child: CircularProgressIndicator()),
+        ),
+      ],
+    ),
+  ),
+);
+
+} }
+
+// ====== MUSIC (Equalizer + Player) ====== class MusicScreen extends StatefulWidget { const MusicScreen({super.key}); @override State<MusicScreen> createState() => _MusicScreenState(); }
+
+class _MusicScreenState extends State<MusicScreen> { final _player = AudioPlayer(); final _bands = [60, 230, 910, 3600, 14000]; // Hz (UI only) final Map<int, double> _gains = {60: 0, 230: 0, 910: 0, 3600: 0, 14000: 0}; // dB String _preset = 'Custom';
+
+@override void initState() { super.initState(); _initAudio(); }
+
+Future<void> _initAudio() async { final session = await AudioSession.instance; await session.configure(const AudioSessionConfiguration.music()); await _player.setAsset('assets/sample.mp3'); }
+
+@override void dispose() { _player.dispose(); super.dispose(); }
+
+void _applyPreset(String name) { final presets = { 'Pop': {60: -1.0, 230: 2.0, 910: 3.0, 3600: 2.0, 14000: -1.0}, 'Rock': {60: 3.0, 230: 1.0, 910: 0.0, 3600: 2.0, 14000: 3.0}, 'Hip-Hop': {60: 5.0, 230: 3.0, 910: 0.0, 3600: -1.0, 14000: 1.0}, 'Jazz': {60: -1.0, 230: 0.0, 910: 2.0, 3600: 3.0, 14000: 2.0}, 'Flat': {60: 0.0, 230: 0.0, 910: 0.0, 3600: 0.0, 14000: 0.0}, }; setState(() { _preset = name; _gains.addAll(presets[name]!); }); // TODO: Wire to platform EQ via a MethodChannel on Android (AudioEffect API) }
+
+@override Widget build(BuildContext context) { return ListView( padding: const EdgeInsets.all(12), children: [ Card( child: Padding( padding: const EdgeInsets.all(16.0), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: [ const Text('Player', style: TextStyle(fontWeight: FontWeight.w700)), const SizedBox(height: 8), Row( children: [ IconButton( icon: const Icon(Ionicons.play), onPressed: _player.play, ), IconButton( icon: const Icon(Ionicons.pause), onPressed: _player.pause, ), IconButton( icon: const Icon(Ionicons.stop), onPressed: _player.stop, ), const Spacer(), const Icon(Ionicons.options_outline, color: beeYellow), const SizedBox(width: 8), Text('Preset: $_preset'), const SizedBox(width: 8), PopupMenuButton<String>( icon: const Icon(Ionicons.chevron_down), onSelected: _applyPreset, itemBuilder: (ctx) => [ 'Pop', 'Rock', 'Hip-Hop', 'Jazz', 'Flat' ].map((e) => PopupMenuItem(value: e, child: Text(e))).toList(), ), ], ), ], ), ), ), const _SectionTitle('Equalizer (visual only)'), Card( child: Padding( padding: const EdgeInsets.all(16.0), child: Row( mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: _bands.map((hz) { return _EqSlider( label: '${hz ~/ (hz >= 1000 ? 1000 : 1)}${hz >= 1000 ? 'k' : ''}Hz', value: _gains[hz]!, onChanged: (v) => setState(() => _gains[hz] = v), ); }).toList(), ), ), ), ], ); } }
+
+class _EqSlider extends StatelessWidget { final String label; final double value; final ValueChanged<double> onChanged; const _EqSlider({required this.label, required this.value, required this.onChanged}); @override Widget build(BuildContext context) { return Column( mainAxisSize: MainAxisSize.min, children: [ RotatedBox( quarterTurns: 3, child: Slider( min: -10, max: 10, divisions: 40, value: value, onChanged: onChanged, ), ), const SizedBox(height: 8), Text(label, style: const TextStyle(color: beeYellow)), ], ); } }
+
+// ====== APPS (specials like Play Store) ====== class AppsScreen extends StatelessWidget { const AppsScreen({super.key}); @override Widget build(BuildContext context) { final apps = [ {'name': 'Boomplay', 'desc': 'Music for Africa'}, {'name': 'Shazam', 'desc': 'Name that song'}, {'name': 'YouTube', 'desc': 'Video platform'}, {'name': 'TubePlay', 'desc': 'Third-party client'}, {'name': 'Total MP3', 'desc': 'Lightweight player'}, ]; return ListView( padding: const EdgeInsets.all(12), children: [ const _SectionTitle('App Store Specials'), ...apps.map((a) => Card( child: ListTile( leading: const Icon(Ionicons.apps, color: beeYellow), title: Text(a['name']!), subtitle: Text(a['desc']!), trailing: ElevatedButton( onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: beeYellow, foregroundColor: Colors.black), child: const Text('View'), ), ), )), ], ); } }
+
+// ====== ASSISTANT (placeholder offline AI UI) ====== class AssistantScreen extends StatelessWidget { const AssistantScreen({super.key}); @override Widget build(BuildContext context) { return ListView( padding: const EdgeInsets.all(12), children: [ Card( child: Padding( padding: const EdgeInsets.all(16.0), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ Text('Assistant', style: TextStyle(fontWeight: FontWeight.w700)), SizedBox(height: 8), Text('Ask me to play, search, or recommend. (Wire to local model like GPT4All later).'), ], ), ), ), ], ); } }
+
+// ====== ABOUT ====== class AboutScreen extends StatelessWidget { const AboutScreen({super.key}); @override Widget build(BuildContext context) { return Scaffold( appBar: AppBar(title: const Text('About', style: TextStyle(color: beeYellow))), body: ListView( padding: const EdgeInsets.all(16), children: [ Center(child: Image.asset('assets/bee.png', width: 96, height: 96)), const SizedBox(height: 12), const Center( child: Text('Tube Bee', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: beeYellow)), ), const SizedBox(height: 24), const ListTile( leading: Icon(Ionicons.person_outline, color: beeYellow), title: Text('Developer'), subtitle: Text('Luthando Ndevu'), ), const ListTile( leading: Icon(Ionicons.code_slash_outline, color: beeYellow), title: Text('Version'), subtitle: Text('1.0'), ), const ListTile( leading: Icon(Ionicons.sparkles_outline, color: beeYellow), title: Text('Powered by'), subtitle: Text('AI Assistant'), ), const SizedBox(height: 24), Card( child: Padding( padding: const EdgeInsets.all(16.0), child: Column( crossAxisAlignment: CrossAxisAlignment.start, children: const [ Text('Notes', style: TextStyle(fontWeight: FontWeight.w700)), SizedBox(height: 8), Text('• Biometric lock required to open the app.'), Text("• 'Hide in-app ads' only affects Tube Bee UI (can't block ads inside third-party streams)."), Text('• Equalizer sliders are visual until you connect Android AudioEffect via a MethodChannel.'), ], ), ), ), ], ), ); } }
+
+// ====== UTILITY UI ====== class SettingsSheet extends StatelessWidget { const SettingsSheet({super.key}); @override Widget build(BuildContext context) { final settings = context.watch<SettingsModel>(); return Padding( padding: const EdgeInsets.all(16.0), child: Column( mainAxisSize: MainAxisSize.min, children: [ SwitchListTile( title: const Text('Hide in-app ads'), value: settings.hideInAppAds, onChanged: settings.toggleAds, ), SwitchListTile( title: const Text('Auto-rotate video'), value: settings.autoRotateVideo, onChanged: settings.toggleRotate, ), SwitchListTile( title: const Text('Recommendations'), value: settings.recommendationsOn, onChanged: settings.toggleRecs, ), ], ), ); } }
+
+// ====== ENTRYPOINT ====== Future<void> main() async { WidgetsFlutterBinding.ensureInitialized(); await Hive.initFlutter(); final history = HistoryModel(); await history.init(); runApp(MultiProvider( providers: [ ChangeNotifierProvider(create: () => SettingsModel()), ChangeNotifierProvider(create: () => history), ], child: MaterialApp( debugShowCheckedModeBanner: false, title: 'Tube Bee', theme: tubeBeeTheme(), home: const LockGate(), ), )); }
+
+flutter build ios --release
